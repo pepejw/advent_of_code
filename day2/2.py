@@ -1,32 +1,49 @@
+def testline(line):
+
+    lastincreasing = ""
+    rowsafe = True
+    for j in range(len(line)-1):
+        if int(line[j]) - int(line[j+1]) < 0:
+            currentincreasing = True
+        elif int(line[j]) - int(line[j+1]) > 0:
+            currentincreasing = False
+        else:
+            rowsafe = False
+            break
+        if lastincreasing != "":
+            if currentincreasing != lastincreasing:
+                rowsafe = False
+                break
+        if abs(int(line[j]) - int(line[j+1])) > 3:
+            rowsafe = False
+            break
+        rowsafe = True
+        lastincreasing = currentincreasing
+    return rowsafe
+
 safe = []
 f = open("input","r")
 lines = f.readlines()
 for i in range(len(lines)):
-     lines[i] = lines[i].removesuffix("\n")
-     lines[i] = lines[i].split(" ")
+     lines[i] = lines[i].removesuffix("\n").split(" ")
 for i in range(len(lines)):
-    lastIncreasing = ""
-    for j in range(len(lines[i])-1):
-        if int(lines[i][j]) - int(lines[i][j+1]) < 0:
-            print("inc")
-            currentIncreasing = True
-        elif int(lines[i][j]) - int(lines[i][j+1]) > 0:
-            print("dec")
-            currentIncreasing = False
-        else:
-            print("stays same")
-            rowSafe = False
-            break
-        if lastIncreasing != "":
-            if currentIncreasing != lastIncreasing:
-                print("at least one line fails")
-                rowSafe = False
-                break      
-        if abs(int(lines[i][j]) - int(lines[i][j+1])) > 3:
-            print("gap bigger than 3")
-            rowSafe = False
-            break
-        rowSafe = True
-        lastIncreasing = currentIncreasing
+    line = lines[i]
+    rowSafe = testline(line)
+    oldLine = []
+    for item in line:
+        oldLine.append(item)
+    if not rowSafe:
+        for j in range(len(line)):
+            del(line[j])
+            rowSafe = testline(line)
+            if rowSafe:
+                break
+            line = []
+            for item in oldLine:
+                line.append(item)
     safe.append(rowSafe)
+                
+        
+    
+
 print(safe.count(True))     
